@@ -12,7 +12,8 @@ class MockPlayerRepository implements PlayerRepository {
   }
 
   @override
-  int resolveEventIndex(SongModel song, Duration position, int currentEventIndex) {
+  int resolveEventIndex(
+      SongModel song, Duration position, int currentEventIndex) {
     for (int i = song.events.length - 1; i >= 0; i--) {
       if (position < song.events[i].timestamp) continue;
       return i;

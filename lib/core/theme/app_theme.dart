@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Tema global do app — cor principal roxo, visual limpo.
 abstract class AppTheme {
-  static const _primaryColor = Color(0xFF7C4DFF); // roxo vibrante
+  static const _primaryColor = Color(0xFF7C4DFF);
   static const _seedColor = _primaryColor;
 
   // ─── Light ───
@@ -11,7 +10,7 @@ abstract class AppTheme {
     colorSchemeSeed: _seedColor,
     brightness: Brightness.light,
     appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -38,7 +37,7 @@ abstract class AppTheme {
     colorSchemeSeed: _seedColor,
     brightness: Brightness.dark,
     appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 
-/// Card que exibe o status atual de conexão Bluetooth.
 class StatusCard extends StatelessWidget {
   final bool isConnected;
+  final bool isConnecting;
   final String? deviceName;
 
   const StatusCard({
     super.key,
     required this.isConnected,
+    this.isConnecting = false,
     this.deviceName,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final statusColor = isConnected ? Colors.green : Colors.redAccent;
-    final statusText = isConnected ? 'Conectado' : 'Desconectado';
+    final statusColor = isConnected
+        ? Colors.green
+        : isConnecting
+            ? Colors.orange
+            : Colors.redAccent;
+    final statusText = isConnected
+        ? 'Conectado'
+        : isConnecting
+            ? 'Conectando...'
+            : 'Desconectado';
 
     return Card(
       child: Padding(
@@ -23,10 +32,10 @@ class StatusCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.bluetooth, size: 48, color: statusColor),
+            Icon(Icons.wifi, size: 48, color: statusColor),
             const SizedBox(height: 12),
             Text(
-              'Status do dispositivo',
+              'Status MQTT',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -41,10 +50,7 @@ class StatusCard extends StatelessWidget {
             ),
             if (deviceName != null) ...[
               const SizedBox(height: 8),
-              Text(
-                deviceName!,
-                style: theme.textTheme.bodyLarge,
-              ),
+              Text(deviceName!, style: theme.textTheme.bodyLarge),
             ],
           ],
         ),

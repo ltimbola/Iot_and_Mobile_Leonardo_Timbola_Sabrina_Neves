@@ -9,6 +9,7 @@ import '../../../domain/use_cases/player/get_time_to_next_use_case.dart';
 import '../../../domain/use_cases/player/resolve_event_index_use_case.dart';
 import '../../../models/chord_event.dart';
 import '../../../models/song_model.dart';
+import '../../../services/mqtt_service.dart';
 
 class PlayerController extends ChangeNotifier {
   PlayerController(this.song, {PlayerRepository? repository})
@@ -20,7 +21,8 @@ class PlayerController extends ChangeNotifier {
       GetCurrentEventUseCase(_repository);
   late final ResolveEventIndexUseCase _resolveEventIndex =
       ResolveEventIndexUseCase(_repository);
-  late final GetNextChordUseCase _getNextChord = GetNextChordUseCase(_repository);
+  late final GetNextChordUseCase _getNextChord =
+      GetNextChordUseCase(_repository);
   late final GetTimeToNextUseCase _getTimeToNext =
       GetTimeToNextUseCase(_repository);
   final FormatDurationUseCase _formatDuration = const FormatDurationUseCase();
@@ -32,16 +34,19 @@ class PlayerController extends ChangeNotifier {
 
   ChordEvent get currentEvent => _getCurrentEvent(song, currentEventIndex);
   String get nextChord => _getNextChord(song, currentEventIndex);
-  Duration get timeToNext => _getTimeToNext(song, currentPosition, currentEventIndex);
+  Duration get timeToNext =>
+      _getTimeToNext(song, currentPosition, currentEventIndex);
   double get progress => song.duration.inMilliseconds == 0
       ? 0
       : currentPosition.inMilliseconds / song.duration.inMilliseconds;
   bool get isFinished => currentPosition >= song.duration;
+  bool get mqttConnected => MqttService.instance.isConnected;
   String get statusLabel {
     if (isPlaying) return 'Sincronização ativa';
     if (isFinished) return 'Finalizado';
-    return 'Conectado ao ESP32';
+    return mqttConnected ? 'Conectado via MQTT' : 'MQTT desconectado';
   }
+
   String formatDuration(Duration d) => _formatDuration(d);
 
   void play() {
@@ -81,11 +86,19 @@ class PlayerController extends ChangeNotifier {
   }
 
   void _updateChordIndex() {
-    final nextIndex = _resolveEventIndex(song, currentPosition, currentEventIndex);
+    final nextIndex =
+        _resolveEventIndex(song, currentPosition, currentEventIndex);
     if (currentEventIndex != nextIndex) {
       currentEventIndex = nextIndex;
       lastSentChord = currentEvent.chord;
+      MqttService.instance.publish(_chordToNote(lastSentChord));
     }
+  }
+
+  // Maps guitar chord root to piano note format (e.g. "Em" → "E4", "G" → "G4")
+  String _chordToNote(String chord) {
+    if (chord.isEmpty) return '';
+    return '${chord[0].toUpperCase()}4';
   }
 
   @override

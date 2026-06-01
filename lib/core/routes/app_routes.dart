@@ -1,14 +1,16 @@
+
 import 'package:flutter/material.dart';
 import '../../models/song_model.dart';
 import '../../screens/connection/connection_screen.dart';
 import '../../screens/songs/songs_screen.dart';
 import '../../screens/player/player_screen.dart';
+import '../../screens/musicas/musicas_screen.dart';
 
-/// Gerencia rotas nomeadas do app.
 abstract class AppRoutes {
   static const connection = '/';
   static const songs = '/songs';
   static const player = '/player';
+  static const musicas = '/musicas';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -26,6 +28,9 @@ abstract class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => PlayerScreen(song: song),
         );
+
+      case musicas:
+        return MaterialPageRoute(builder: (_) => const MusicasScreen());
 
       default:
         return MaterialPageRoute(builder: (_) => const ConnectionScreen());

@@ -14,10 +14,12 @@ class ScanDevicesButton extends StatelessWidget {
           ? const SizedBox(
               width: 20,
               height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              child: CircularProgressIndicator(
+                  strokeWidth: 2, color: Colors.white),
             )
           : const Icon(Icons.search),
-      label: Text(controller.isLoading ? 'Buscando...' : controller.scanButtonLabel),
+      label: Text(
+          controller.isLoading ? 'Buscando...' : controller.scanButtonLabel),
     );
   }
 }

@@ -32,9 +32,11 @@ class DeviceListSection extends StatelessWidget {
       itemCount: controller.devices.length,
       itemBuilder: (_, i) => DeviceListTile(
         device: controller.devices[i],
-        isSelected: controller.selectedDevice?.address == controller.devices[i].address,
+        isSelected:
+            controller.selectedDevice?.address == controller.devices[i].address,
         onConnect: () async {
-          final device = await controller.connectToDevice(controller.devices[i]);
+          final device =
+              await controller.connectToDevice(controller.devices[i]);
           onConnected(device.name);
         },
       ),

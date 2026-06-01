@@ -16,7 +16,8 @@ class SyncStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final nextSecs = '${(timeToNext.inMilliseconds / 1000).toStringAsFixed(1)}s';
+    final nextSecs =
+        '${(timeToNext.inMilliseconds / 1000).toStringAsFixed(1)}s';
 
     return Card(
       color: theme.colorScheme.surfaceContainerHighest.withAlpha(120),
@@ -37,9 +38,9 @@ class SyncStatusCard extends StatelessWidget {
               caption: 'Próx. envio',
             ),
             StatusItem(
-              icon: Icons.bluetooth,
+              icon: Icons.wifi,
               label: isActive ? 'Ativo' : 'Idle',
-              caption: 'Bluetooth',
+              caption: 'MQTT',
               color: isActive ? Colors.green : null,
             ),
           ],

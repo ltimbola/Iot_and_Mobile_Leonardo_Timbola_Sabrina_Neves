@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'controllers/connection_controller.dart';
 import 'widgets/status_card.dart';
-import 'widgets/scan_devices_button.dart';
-import 'widgets/device_list_section.dart';
 import 'widgets/go_to_songs_button.dart';
 
 class ConnectionScreen extends StatefulWidget {
@@ -23,10 +21,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      appBar: AppBar(title: const Text('SmartGuitar'), leading: const Icon(Icons.bluetooth)),
+      appBar: AppBar(
+        title: const Text('SmartGuitar'),
+        leading: const Icon(Icons.wifi),
+      ),
       body: AnimatedBuilder(
         animation: _controller,
         builder: (_, __) => SafeArea(
@@ -37,27 +36,49 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                 const SizedBox(height: 24),
                 StatusCard(
                   isConnected: _controller.isConnected,
-                  deviceName: _controller.selectedDevice?.name,
+                  isConnecting: _controller.isConnecting,
                 ),
                 const SizedBox(height: 20),
-                ScanDevicesButton(controller: _controller),
-                const SizedBox(height: 24),
-                if (_controller.devices.isNotEmpty)
-                  Align(alignment: Alignment.centerLeft, child: Text('Dispositivos encontrados', style: theme.textTheme.titleMedium)),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: DeviceListSection(
-                    controller: _controller,
-                    theme: theme,
-                    onConnected: (name) {
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Conectado a $name')));
-                    },
+                if (_controller.errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      _controller.errorMessage!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
+                FilledButton.icon(
+                  onPressed: _controller.isConnecting
+                      ? null
+                      : _controller.isConnected
+                          ? _controller.disconnect
+                          : _controller.connect,
+                  icon: _controller.isConnecting
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Icon(
+                          _controller.isConnected ? Icons.wifi_off : Icons.wifi,
+                        ),
+                  label: Text(_controller.buttonLabel),
                 ),
+                const Spacer(),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 24, top: 8),
-                  child: GoToSongsButton(selectedOrFallbackName: _controller.selectedOrFallbackName),
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const GoToSongsButton(),
+                    ],
+                  ),
                 ),
               ],
             ),
